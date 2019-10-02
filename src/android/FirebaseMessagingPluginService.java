@@ -47,7 +47,7 @@ public class FirebaseMessagingPluginService extends FirebaseMessagingService {
         try {
             ApplicationInfo ai = getPackageManager().getApplicationInfo(getApplicationContext().getPackageName(), PackageManager.GET_META_DATA);
             this.defaultNotificationIcon = ai.metaData.getInt(NOTIFICATION_ICON_KEY, ai.icon);
-            this.defaultNotificationColor = ContextCompat.getColor(this, ai.metaData.getInt(NOTIFICATION_COLOR_KEY));
+            this.defaultNotificationColor = 0xFF000000;
             this.defaultNotificationChannel = ai.metaData.getString(NOTIFICATION_CHANNEL_KEY, "default_channel_id");
         } catch (PackageManager.NameNotFoundException e) {
             Log.e(TAG, "Failed to load meta-data", e);
@@ -82,26 +82,22 @@ public class FirebaseMessagingPluginService extends FirebaseMessagingService {
     }
 
     private void showAlert(RemoteMessage.Notification notification) {
-        this.notificationManager.createNotificationChannel(
-            new NotificationChannel(defaultNotificationChannel, "Miscellaneous", NotificationManager.IMPORTANCE_HIGH));
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            this.notificationManager.createNotificationChannel(
+                new NotificationChannel(defaultNotificationChannel, "Miscellaneous", NotificationManager.IMPORTANCE_DEFAULT));
+        }
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, defaultNotificationChannel);
         builder.setContentTitle(notification.getTitle());
         builder.setContentText(notification.getBody());
         builder.setGroup(notification.getTag());
         builder.setSmallIcon(this.defaultNotificationIcon);
-        builder.setColor(this.defaultNotificationColor);
+        this.defaultNotificationColor = 0xFF000000;
         // must set sound and priority in order to display alert
         builder.setSound(getNotificationSound(notification.getSound()));
         builder.setPriority(2);
 
         this.notificationManager.notify(0, builder.build());
-        // dismiss notification to hide icon from status bar automatically
-        new Handler(getMainLooper()).postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                notificationManager.cancel(0);
-            }
-        }, 3000);
     }
 
     private Uri getNotificationSound(String soundName) {
