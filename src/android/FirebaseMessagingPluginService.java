@@ -84,7 +84,7 @@ public class FirebaseMessagingPluginService extends FirebaseMessagingService {
     private void showAlert(RemoteMessage.Notification notification) {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             this.notificationManager.createNotificationChannel(
-                new NotificationChannel(defaultNotificationChannel, "Miscellaneous", NotificationManager.IMPORTANCE_DEFAULT));
+                new NotificationChannel(defaultNotificationChannel, "Miscellaneous", NotificationManager.IMPORTANCE_HIGH));
         }
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, defaultNotificationChannel);
@@ -92,7 +92,7 @@ public class FirebaseMessagingPluginService extends FirebaseMessagingService {
         builder.setContentText(notification.getBody());
         builder.setGroup(notification.getTag());
         builder.setSmallIcon(this.defaultNotificationIcon);
-        this.defaultNotificationColor = 0xFF000000;
+        builder.setColor(0xFF000000);
         // must set sound and priority in order to display alert
         builder.setSound(getNotificationSound(notification.getSound()));
         builder.setPriority(2);
