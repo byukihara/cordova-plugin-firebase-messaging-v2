@@ -54,6 +54,12 @@ public class FirebaseMessagingPluginService extends FirebaseMessagingService {
         } catch(Resources.NotFoundException e) {
             Log.e(TAG, "Failed to load notification color", e);
         }
+
+        // On Android O or greater we need to create a new notification channel
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            this.notificationManager.createNotificationChannel(
+                new NotificationChannel(this.defaultNotificationChannel, "Alertas e avisos", NotificationManager.IMPORTANCE_HIGH));
+        }
     }
 
     @Override
@@ -82,12 +88,7 @@ public class FirebaseMessagingPluginService extends FirebaseMessagingService {
     }
 
     private void showAlert(RemoteMessage.Notification notification) {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            this.notificationManager.createNotificationChannel(
-                new NotificationChannel(defaultNotificationChannel, "Miscellaneous", NotificationManager.IMPORTANCE_HIGH));
-        }
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, defaultNotificationChannel);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, this.defaultNotificationChannel);
         builder.setContentTitle(notification.getTitle());
         builder.setContentText(notification.getBody());
         builder.setGroup(notification.getTag());
@@ -95,9 +96,19 @@ public class FirebaseMessagingPluginService extends FirebaseMessagingService {
         builder.setColor(0xFF3D9BE9);
         // must set sound and priority in order to display alert
         builder.setSound(getNotificationSound(notification.getSound()));
-        builder.setPriority(2);
+        
 
-        this.notificationManager.notify(0, builder.build());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(this.defaultNotificationChannel,
+                    "Alertas e avisos",
+                    NotificationManager.IMPORTANCE_HIGH);
+            notificationManager.createNotificationChannel(channel);
+            builder.setImportance(NotificationManager.IMPORTANCE_HIGH);
+        } else {
+            builder.setPriority(2);
+        }
+
+        this.notificationManager.notify(10, builder.build());
     }
 
     private Uri getNotificationSound(String soundName) {
