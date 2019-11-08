@@ -58,7 +58,7 @@ public class FirebaseMessagingPluginService extends FirebaseMessagingService {
         // On Android O or greater we need to create a new notification channel
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             this.notificationManager.createNotificationChannel(
-                new NotificationChannel(this.defaultNotificationChannel, "Alertas e avisos", NotificationManager.IMPORTANCE_HIGH));
+                new NotificationChannel(this.defaultNotificationChannel, "Notificações de leads", NotificationManager.IMPORTANCE_HIGH));
         }
     }
 
@@ -99,11 +99,13 @@ public class FirebaseMessagingPluginService extends FirebaseMessagingService {
         
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(this.defaultNotificationChannel,
-                    "Alertas e avisos",
-                    NotificationManager.IMPORTANCE_HIGH);
-            notificationManager.createNotificationChannel(channel);
-            builder.setImportance(NotificationManager.IMPORTANCE_HIGH);
+            this.notificationManager.createNotificationChannel(
+                    new NotificationChannel(
+                            this.defaultNotificationChannel,
+                            "Notificações de leads",
+                            NotificationManager.IMPORTANCE_HIGH
+                    )
+            );
         } else {
             builder.setPriority(2);
         }
