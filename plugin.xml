@@ -1,7 +1,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
 xmlns:android="http://schemas.android.com/apk/res/android"
            id="cordova-plugin-firebase-messaging"
-      version="3.0.1">
+      version="4.0.2">
 
     <name>FirebaseMessagingPlugin</name>
     <description>Cordova plugin for Firebase Cloud Messaging</description>
@@ -47,7 +47,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 
         <podspec>
             <config>
-                <source url="https://github.com/CocoaPods/Specs.git"/>
+                <source url="https://cdn.cocoapods.org/"/>
             </config>
             <pods>
                 <pod name="Firebase/Analytics" spec="~> 6.3.0" />
@@ -58,7 +58,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 
     <platform name="android">
         <preference name="FIREBASE_ANALYTICS_VERSION" default="17.2.+"/>
-        <preference name="FIREBASE_MESSAGING_VERSION" default="20.0.+"/>
+        <preference name="FIREBASE_MESSAGING_VERSION" default="20.1.+"/>
         <preference name="ANDROIDX_CORE_VERSION" default="1.0.+"/>
 
         <config-file target="res/xml/config.xml" parent="/*">
